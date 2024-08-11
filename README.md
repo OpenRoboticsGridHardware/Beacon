@@ -80,4 +80,5 @@ You can run the application either directly on the Raspberry Pi or within a Dock
 Alternatively, you can use Docker to run both services:
 
 ```bash
-docker run -p 5000:5000 -p 8765:8765 rgb-led-webcam
+docker run -d --restart unless-stopped --privileged -p 5000:5000 -p 8765:8765 rgb-led-webcam
+
