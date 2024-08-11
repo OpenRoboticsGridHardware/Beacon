@@ -72,4 +72,4 @@ Before you begin, make sure you have the following installed on your Raspberry P
 If you prefer to run the Docker container directly without Docker Compose, you can use:
 
 ```bash
-docker run -d --restart unless-stopped --privileged -p 5000:5000 -p 8765:8765 rgb-led-webcam
+docker run -d --restart unless-stopped --privileged -p 5000:5000 -p 8765:8765 Beacon
