@@ -2,30 +2,34 @@
 
 This project combines two functionalities:
 
-1. **RGB LED Controller**: Control RGB LEDs connected to a Raspberry Pi via a WebSocket server.
+1. **RGB LED Controller**: Manage RGB LEDs connected to a Raspberry Pi via a WebSocket server.
 2. **Webcam Streamer**: Stream video from the Raspberry Pi's camera using Flask and OpenCV.
 
 ## Features
 
-- **RGB LED Control**: Control the color of multiple RGB LEDs using PWM via a WebSocket server.
-- **Webcam Streaming**: Stream the video feed from a connected camera over HTTP.
+- **RGB LED Control**: Adjust the color of multiple RGB LEDs using PWM through a WebSocket server.
+- **Webcam Streaming**: Broadcast the video feed from a connected camera over HTTP.
 
 ## Hardware Setup
 
-- **LED1**: Connected to GPIO 17 (Red), 27 (Green), 22 (Blue).
-- **LED2**: Connected to GPIO 23 (Red), 24 (Green), 25 (Blue).
-- **LED3**: Connected to GPIO 5 (Red), 6 (Green), 13 (Blue).
+### RGB LEDs
+
+- **LED1**: GPIO 17 (Red), 27 (Green), 22 (Blue)
+- **LED2**: GPIO 23 (Red), 24 (Green), 25 (Blue)
+- **LED3**: GPIO 5 (Red), 6 (Green), 13 (Blue)
+
+Ensure that your LEDs are correctly wired to these GPIO pins on your Raspberry Pi.
 
 ## Software Setup
 
 ### Prerequisites
 
-Ensure your Raspberry Pi has the following installed:
+Before you begin, make sure you have the following installed on your Raspberry Pi:
 
-- Raspberry Pi OS (or another compatible Linux distribution).
-- Docker and Docker Compose.
+- **Raspberry Pi OS** (or another compatible Linux distribution)
+- **Docker** and **Docker Compose**
 
-### Installation
+### Installation Steps
 
 1. **Install Docker and Docker Compose:**
 
@@ -65,27 +69,7 @@ Ensure your Raspberry Pi has the following installed:
 
 ### Docker Execution
 
-Alternatively, you can use Docker to run both services:
+If you prefer to run the Docker container directly without Docker Compose, you can use:
 
 ```bash
 docker run -d --restart unless-stopped --privileged -p 5000:5000 -p 8765:8765 rgb-led-webcam
-
-#### Docker Compose Configuration
-
-The `docker-compose.yml` file defines the services and their configurations. It includes the `privileged` mode to allow access to GPIO pins:
-
-```yaml
-version: '3.7'
-
-services:
-  rgb-led-webcam:
-    image: rgb-led-webcam
-    build: .
-    ports:
-      - "5000:5000"
-      - "8765:8765"
-    restart: unless-stopped
-    privileged: true
-
-
-
