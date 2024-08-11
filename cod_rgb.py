@@ -45,11 +45,21 @@ async def handler(websocket, path):
             r = data.get("red", 0)
             g = data.get("green", 0)
             b = data.get("blue", 0)
+            
+            # Set the color of the LEDs
             set_color(r, g, b)
+            
+            # Send an acknowledgment back to the client
+            response = json.dumps({"status": "OK"})
+            await websocket.send(response)
         except json.JSONDecodeError:
             print("Failed to decode JSON")
+            response = json.dumps({"status": "Error", "message": "Invalid JSON"})
+            await websocket.send(response)
         except Exception as e:
             print(f"An error occurred: {e}")
+            response = json.dumps({"status": "Error", "message": str(e)})
+            await websocket.send(response)
 
 start_server = websockets.serve(handler, "0.0.0.0", 8765)
 
@@ -64,19 +74,3 @@ finally:
         led['green'].stop()
         led['blue'].stop()
     GPIO.cleanup()
-
-
-
-
-
-
-"""
-
-JSONTYPE
-{
-    "red": 255,
-    "green": 100,
-    "blue": 50
-}
-
- """
