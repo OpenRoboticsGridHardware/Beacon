@@ -51,8 +51,8 @@ Before you begin, make sure you have the following installed on your Raspberry P
 2. **Clone the Repository:**
 
     ```bash
-    git clone https://github.com/your-repo/rgb-led-webcam.git
-    cd rgb-led-webcam
+    gh repo clone OpenRoboticsGridHardware/Beacon
+    cd Beacon
     ```
 
 3. **Build the Docker Image:**
