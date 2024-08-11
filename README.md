@@ -10,13 +10,6 @@ This project combines two functionalities:
 - **RGB LED Control**: Control the color of multiple RGB LEDs using PWM via a WebSocket server.
 - **Webcam Streaming**: Stream the video feed from a connected camera over HTTP.
 
-## Requirements
-
-- Raspberry Pi with Raspbian OS.
-- Python 3.
-- RGB LEDs connected to GPIO pins.
-- A camera compatible with OpenCV (e.g., Raspberry Pi Camera Module).
-
 ## Hardware Setup
 
 - **LED1**: Connected to GPIO 17 (Red), 27 (Green), 22 (Blue).
@@ -27,58 +20,72 @@ This project combines two functionalities:
 
 ### Prerequisites
 
-Install the following dependencies:
+Ensure your Raspberry Pi has the following installed:
 
-- `libgl1-mesa-glx`
-- `libglib2.0-0`
-- `libsm6`
-- `libxext6`
-- `libxrender-dev`
-- `python3`
-- `python3-pip`
-- `opencv-python`
-- `flask`
-- `websockets`
-- `RPi.GPIO`
+- Raspberry Pi OS (or another compatible Linux distribution).
+- Docker and Docker Compose.
 
 ### Installation
 
-1. Clone this repository:
+1. **Install Docker and Docker Compose:**
+
+    ```bash
+    # Update package list
+    sudo apt-get update
+
+    # Install Docker
+    curl -fsSL https://get.docker.com -o get-docker.sh
+    sudo sh get-docker.sh
+
+    # Add your user to the docker group (optional but recommended)
+    sudo usermod -aG docker $USER
+
+    # Install Docker Compose
+    sudo apt-get install docker-compose
+    ```
+
+2. **Clone the Repository:**
+
     ```bash
     git clone https://github.com/your-repo/rgb-led-webcam.git
     cd rgb-led-webcam
     ```
 
-2. Install the required Python packages:
+3. **Build the Docker Image:**
+
     ```bash
-    pip3 install -r requirements.txt
+    docker-compose build
     ```
 
-3. Build the Docker image:
+4. **Run the Services with Docker Compose:**
+
     ```bash
-    docker build -t rgb-led-webcam .
+    docker-compose up -d
     ```
 
-### Running the Application
-
-You can run the application either directly on the Raspberry Pi or within a Docker container.
-
-#### Direct Execution
-
-1. Start the Flask app for webcam streaming:
-    ```bash
-    python3 flask_app.py
-    ```
-
-2. Start the WebSocket server for LED control:
-    ```bash
-    python3 websocket_server.py
-    ```
-
-#### Docker Execution
+### Docker Execution
 
 Alternatively, you can use Docker to run both services:
 
 ```bash
 docker run -d --restart unless-stopped --privileged -p 5000:5000 -p 8765:8765 rgb-led-webcam
+
+#### Docker Compose Configuration
+
+The `docker-compose.yml` file defines the services and their configurations. It includes the `privileged` mode to allow access to GPIO pins:
+
+```yaml
+version: '3.7'
+
+services:
+  rgb-led-webcam:
+    image: rgb-led-webcam
+    build: .
+    ports:
+      - "5000:5000"
+      - "8765:8765"
+    restart: unless-stopped
+    privileged: true
+
+
 
