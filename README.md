@@ -2,32 +2,44 @@
 
 This project combines two functionalities:
 
-1. **RGB LED Controller**: Manage RGB LEDs connected to a Raspberry Pi via a WebSocket server.
-2. **Webcam Streamer**: Stream video from the Raspberry Pi's camera using Flask and OpenCV.
+1. **RGB LED Controller:** Manage RGB LEDs connected to a Raspberry Pi via a WebSocket server.
+2. **Webcam Streamer:** Stream video from the Raspberry Pi's camera using Flask and OpenCV.
 
 ## Features
 
-- **RGB LED Control**: Adjust the color of multiple RGB LEDs using PWM through a WebSocket server.
-- **Webcam Streaming**: Broadcast the video feed from a connected camera over HTTP.
+- **RGB LED Control:** Adjust the color of multiple RGB LEDs using PWM through a WebSocket server.
+- **Webcam Streaming:** Broadcast the video feed from a connected camera over HTTP.
 
 ## Hardware Setup
 
 ### RGB LEDs
 
-- **LED1**: GPIO 17 (Red), 27 (Green), 22 (Blue)
-- **LED2**: GPIO 23 (Red), 24 (Green), 25 (Blue)
-- **LED3**: GPIO 5 (Red), 6 (Green), 13 (Blue)
+Ensure that your LEDs are correctly wired to the following GPIO pins on your Raspberry Pi:
 
-Ensure that your LEDs are correctly wired to these GPIO pins on your Raspberry Pi.
+- **LED1:** 
+  - Red: GPIO 17
+  - Green: GPIO 27
+  - Blue: GPIO 22
+
+- **LED2:** 
+  - Red: GPIO 23
+  - Green: GPIO 24
+  - Blue: GPIO 25
+
+- **LED3:** 
+  - Red: GPIO 5
+  - Green: GPIO 6
+  - Blue: GPIO 13
 
 ## Software Setup
 
 ### Prerequisites
 
-Before you begin, make sure you have the following installed on your Raspberry Pi:
+Before you begin, ensure that the following software is installed on your Raspberry Pi:
 
-- **Raspberry Pi OS** (or another compatible Linux distribution)
-- **Docker** and **Docker Compose**
+- Raspberry Pi OS (or another compatible Linux distribution)
+- Docker
+- Docker Compose
 
 ### Installation Steps
 
@@ -58,8 +70,10 @@ Before you begin, make sure you have the following installed on your Raspberry P
 3. **Build the Docker Image:**
 
     ```bash
-    docker-compose build
+    docker build -t beacon .
     ```
+
+    - The `-t beacon` flag tags the image with the name `beacon`.
 
 4. **Run the Services with Docker Compose:**
 
@@ -67,9 +81,11 @@ Before you begin, make sure you have the following installed on your Raspberry P
     docker-compose up -d
     ```
 
-### Docker Execution
+    - This will start the services defined in your `docker-compose.yml` file.
 
-If you prefer to run the Docker container directly without Docker Compose, you can use:
+### Alternative Docker Execution
+
+If you prefer to run the Docker container directly without Docker Compose, use the following command:
 
 ```bash
-docker run -d --restart unless-stopped --privileged -p 5000:5000 -p 8765:8765 Beacon
+docker run -d --restart unless-stopped --privileged -p 5000:5000 -p 8765:8765 beacon
