@@ -88,4 +88,4 @@ Before you begin, ensure that the following software is installed on your Raspbe
 If you prefer to run the Docker container directly without Docker Compose, use the following command:
 
 ```bash
-docker run -d --restart unless-stopped --privileged -p 5000:5000 -p 8765:8765 beacon
+docker run -d --restart unless-stopped --privileged -p 8000:8000 -p 8765:8765 beacon
