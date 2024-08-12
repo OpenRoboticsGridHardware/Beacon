@@ -2,3 +2,7 @@ opencv-python
 Flask
 RPi.GPIO
 websockets
+opencv-python-headless
+fastapi
+starlette
+uvicorn
