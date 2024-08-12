@@ -2,10 +2,10 @@ version: '3.7'
 
 services:
   rgb-led-webcam:
-    image: rgb-led-webcam
+    image: beacon
     build: .
     ports:
-      - "5000:5000"
+      - "8000:8000"
       - "8765:8765"
     restart: unless-stopped
     privileged: true

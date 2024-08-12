@@ -1,49 +1,37 @@
+from fastapi import FastAPI, WebSocket
 import cv2
-import time
-from flask import Flask, Response, stream_with_context
+import numpy as np
+from starlette.responses import StreamingResponse
 
-app = Flask(__name__)
+app = FastAPI()
 
-def get_max_resolution(camera):
-    camera.set(cv2.CAP_PROP_FRAME_WIDTH, 10000)  
-    camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 10000) 
-    max_width = int(camera.get(cv2.CAP_PROP_FRAME_WIDTH))
-    max_height = int(camera.get(cv2.CAP_PROP_FRAME_HEIGHT))
-    
-    return max_width, max_height
+# Initialize the camera
+camera = cv2.VideoCapture(0, cv2.CAP_V4L2)
 
 def generate_frames():
-    camera = cv2.VideoCapture(0, cv2.CAP_V4L2) 
-    if not camera.isOpened():
-        print("Error: Could not open camera.")
-        return
-    
-    max_width, max_height = get_max_resolution(camera)
-    camera.set(cv2.CAP_PROP_FRAME_WIDTH, max_width)
-    camera.set(cv2.CAP_PROP_FRAME_HEIGHT, max_height)
-    
-    print(f"Camera set to maximum resolution: {max_width}x{max_height}")
-
     while True:
         success, frame = camera.read()
         if not success:
-            print("Error: Could not read frame from camera.")
             break
-        ret, buffer = cv2.imencode('.jpg', frame, [int(cv2.IMWRITE_JPEG_QUALITY), 85])
+
+        # Resize frame for faster processing (optional)
+        frame = cv2.resize(frame, (640, 480))
+
+        # Encode frame to JPEG
+        ret, buffer = cv2.imencode('.jpg', frame, [int(cv2.IMWRITE_JPEG_QUALITY), 75])
         if not ret:
-            print("Error: Could not encode frame.")
-            break
+            continue
 
-        frame = buffer.tobytes()
+        frame_bytes = buffer.tobytes()
 
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+        # Yield frame bytes
+        yield frame_bytes
 
-    camera.release()
-
-@app.route('/video_feed')
+@app.get("/video_feed")
 def video_feed():
-    return Response(stream_with_context(generate_frames()), mimetype='multipart/x-mixed-replace; boundary=frame')
+    def frame_generator():
+        for frame_bytes in generate_frames():
+            yield (b'--frame\r\n'
+                   b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, threaded=True, debug=False, use_reloader=False)
+    return StreamingResponse(frame_generator(), media_type='multipart/x-mixed-replace; boundary=frame')
