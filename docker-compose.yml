@@ -7,6 +7,9 @@ services:
     ports:
       - "8000:8000"
       - "8765:8765"
+    environment:
+      - CAMERA_WIDTH=640
+      - CAMERA_HEIGHT=480
     restart: unless-stopped
     privileged: true
 
